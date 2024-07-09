@@ -7,8 +7,13 @@ import org.springframework.stereotype.Service;
 import com.web.repository.UserRepository;
 import com.web.user.User;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Service
 public class UserServiceImpl implements UserService {
+
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Autowired
     private UserRepository userRepository;
@@ -22,6 +27,7 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("Password cannot be null or empty");
         }
         String encodedPassword = passwordEncoder.encode(user.getUserPassword());
+        logger.info("Encoded password for user {}: {}", user.getUserId(), encodedPassword);
         user.setUserPassword(encodedPassword);
         userRepository.save(user);
     }
@@ -29,11 +35,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findByUserIdAndUserPassword(String userId, String userPassword) {
         User user = userRepository.findByUserId(userId);
-        if (user != null && passwordEncoder.matches(userPassword, user.getUserPassword())) {
-            return user;
-        } else {
-            return null;
+        if (user != null) {
+            boolean matches = passwordEncoder.matches(userPassword, user.getUserPassword());
+            logger.info("Password matches for user {}: {}", userId, matches);
+            if (matches) {
+                return user;
+            }
         }
+        return null;
     }
 
     @Override

@@ -7,9 +7,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.security.core.userdetails.User.UserBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
-public class CustomUserDetailsService implements UserDetailsService  {
+public class CustomUserDetailsService implements UserDetailsService {
+
+    private static final Logger logger = LoggerFactory.getLogger(CustomUserDetailsService.class);
 
     @Autowired
     private UserRepository userRepository;
@@ -18,12 +23,15 @@ public class CustomUserDetailsService implements UserDetailsService  {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUserId(username);
         if (user == null) {
+            logger.error("User not found with username: {}", username);
             throw new UsernameNotFoundException("User not found with username: " + username);
         }
-        return org.springframework.security.core.userdetails.User.builder()
-                .username(user.getUserId())
-                .password(user.getUserPassword())
-                .roles("USER") // 필요한 권한을 추가
-                .build();
+        
+        UserBuilder builder = org.springframework.security.core.userdetails.User.withUsername(username);
+        builder.password(user.getUserPassword());
+        builder.roles("USER");
+        logger.info("Loaded user with username: {}", username);
+        
+        return builder.build();
     }
 }

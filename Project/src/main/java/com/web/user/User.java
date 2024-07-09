@@ -14,42 +14,43 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "users")
+@Table(name = "USERS")
 public class User {
     @Id
-    @Column(name = "USER_ID")
-    @JsonProperty("id")
+    @Column(name = "USER_ID", nullable = false)
+    @JsonProperty("userId")
     private String userId;
 
     @Column(name = "USER_NAME", nullable = false)
-    @JsonProperty("name")
+    @JsonProperty("userName")
     private String userName;
 
-    @Column(name = "USER_NICKNAME", nullable = false)
-    @JsonProperty("nickname")
+    @Column(name = "USER_NICKNAME", nullable = false, unique = true)
+    @JsonProperty("userNickName")
     private String userNickName;
 
     @Column(name = "USER_PASSWORD", nullable = false)
-    @JsonProperty("password")
+    @JsonProperty("userPassword")
     private String userPassword;
 
     @Column(name = "USER_EMAIL", nullable = false)
-    @JsonProperty("email")
+    @JsonProperty("userEmail")
     private String userEmail;
 
     @Column(name = "USER_DOMAIN", nullable = false)
-    @JsonProperty("domain")
+    @JsonProperty("userDomain")
     private String userDomain;
 
     @Temporal(TemporalType.DATE)
     @Column(name = "USER_BIRTH", nullable = false)
-    @JsonProperty("birth")
+    @JsonProperty("userBirth")
     private Date userBirth;
 
     @Column(name = "USER_PHONE_NUM", nullable = false)
-    @JsonProperty("telNumber")
+    @JsonProperty("userPhoneNum")
     private String userPhoneNum;
 
     @Column(name = "USER_PROFILE_IMAGE")
+    @JsonProperty("userProfileImage")
     private String userProfileImage;
 }

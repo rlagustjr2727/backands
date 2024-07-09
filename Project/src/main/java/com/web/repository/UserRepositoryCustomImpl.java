@@ -30,5 +30,4 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom {
         
         return !query.getResultList().isEmpty();
     }
-
 }
