@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication(scanBasePackages = {"com.web"})
 @EnableJpaRepositories(basePackages = "com.web.repository")
-@EntityScan(basePackages = {"com.web.board", "com.web.comment", "com.web.user"})
+@EntityScan(basePackages = {"com.web.board", "com.web.comment", "com.web.user", "com.web.notice"})
 public class ProjectApplication {
 
     public static void main(String[] args) {
