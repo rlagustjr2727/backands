@@ -19,8 +19,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.web.repository.UserRepositoryCustom;
+import com.web.security.CustomUserDetailsService;
 import com.web.security.JwtTokenProvider;
 import com.web.service.EmailService;
 import com.web.service.UserService;
@@ -43,6 +44,9 @@ public class AuthController {
 
     @Autowired
     private UserService userService;
+    
+    @Autowired
+    private CustomUserDetailsService customUserDetailsService;
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
@@ -65,17 +69,36 @@ public class AuthController {
         Map<String, String> response = new HashMap<>();
         try {
             String userId = loginRequest.get("userId");
-            String password = loginRequest.get("userPassword");
+            String userPassword = loginRequest.get("userPassword");
+
+            // 디버깅 로그 추가
+            logger.info("Received userId: {}", userId);
+            logger.info("Received password: {}", userPassword != null ? "****" : "null");
+
+            // 비밀번호가 null인지 확인
+            if (userId == null || userId.isEmpty() || userPassword == null || userPassword.isEmpty()) {
+                response.put("message", "User ID and Password cannot be null");
+                logger.error("User ID and/or Password cannot be null");
+                return response;
+            }
 
             logger.info("Attempting authentication for userId: {}", userId);
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(userId, password));
+            UserDetails userDetails = customUserDetailsService.loadUserByUsername(userId);
 
-            String token = tokenProvider.generateToken(authentication);
+            // 여기서 비밀번호 비교
+            if (passwordEncoder.matches(userPassword, userDetails.getPassword())) {
+                Authentication authentication = authenticationManager.authenticate(
+                        new UsernamePasswordAuthenticationToken(userId, userPassword));
 
-            response.put("token", token);
-            response.put("message", "Login success");
-            logger.info("Authentication successful for userId: {}", userId);
+                String token = tokenProvider.generateToken(authentication);
+
+                response.put("token", token);
+                response.put("message", "Login success");
+                logger.info("Authentication successful for userId: {}", userId);
+            } else {
+                response.put("message", "Invalid username or password");
+                logger.error("Authentication failed for userId: {}", userId);
+            }
         } catch (AuthenticationException e) {
             logger.error("Authentication failed for userId: {}", loginRequest.get("userId"), e);
             response.put("message", "Invalid username or password");
@@ -88,7 +111,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody Map<String, String> userRequest, Model model) throws ParseException {
+    public ResponseEntity<String> register(@RequestBody Map<String, String> userRequest) throws ParseException {
         String userId = userRequest.get("userId");
         if (userId == null || userId.isEmpty()) {
             return ResponseEntity.badRequest().body("User ID is required");
@@ -98,7 +121,7 @@ public class AuthController {
         user.setUserId(userId);
         user.setUserName(userRequest.get("userName"));
         user.setUserNickName(userRequest.get("userNickName"));
-        user.setUserPassword(userRequest.get("userPassword"));
+        user.setUserPassword(passwordEncoder.encode(userRequest.get("userPassword")));  // 비밀번호 인코딩
         user.setUserEmail(userRequest.get("userEmail"));
         user.setUserDomain(userRequest.get("userDomain"));
 

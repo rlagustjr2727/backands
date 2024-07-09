@@ -1,19 +1,19 @@
 package com.web.security;
 
+import java.util.Collection;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
+import com.web.user.User;
 
 public class UserPrincipal implements UserDetails {
 
-    private String userId;
-    private String password;
+    private User user;
 
     // Constructor
-    public UserPrincipal(String userId, String password) {
-        this.userId = userId;
-        this.password = password;
+    public UserPrincipal(User user) {
+        this.user = user;
     }
 
     @Override
@@ -23,12 +23,12 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public String getPassword() {
-        return password;
+        return user.getUserPassword();
     }
 
     @Override
     public String getUsername() {
-        return userId;
+        return user.getUserId();
     }
 
     @Override

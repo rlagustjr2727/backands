@@ -22,7 +22,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private JwtTokenProvider tokenProvider;
 
     @Autowired
-    private UserDetailsService customUserDetailsService;
+    private CustomUserDetailsService customUserDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -31,7 +31,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String jwt = getJwtFromRequest(request);
 
         if (jwt != null && tokenProvider.validateToken(jwt)) {
-            String userId = tokenProvider.getUserIdFromJwtToken(jwt);
+            String userId = tokenProvider.getUserIdFromJWT(jwt);
 
             UserDetails userDetails = customUserDetailsService.loadUserByUsername(userId);
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
