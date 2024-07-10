@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.web.exception.ResourceNotFoundException;
 import com.web.repository.UserRepository;
 import com.web.user.User;
 
@@ -34,7 +35,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findByUserIdAndUserPassword(String userId, String userPassword) {
-        User user = userRepository.findByUserId(userId);
+        User user = userRepository.findByUserId(userId).orElse(null);
         if (user != null) {
             boolean matches = passwordEncoder.matches(userPassword, user.getUserPassword());
             logger.info("Password matches for user {}: {}", userId, matches);
@@ -59,4 +60,16 @@ public class UserServiceImpl implements UserService {
     public User getUserById(String userId) {
         return userRepository.findById(userId).orElse(null);
     }
+
+	@Override
+	public User updateUser(User user) {
+		User existingUser = userRepository.findByUserId(user.getUserId())
+				.orElseThrow(() -> new ResourceNotFoundException("User not found for this id ::" + user.getUserId()));
+		existingUser.setUserName(user.getUserName());
+		existingUser.setUserEmail(user.getUserEmail());
+		existingUser.setUserPassword(user.getUserPassword()); // 암호화가 필요한 경우 암호화 처리 추가
+		
+		return userRepository.save(existingUser); // 기존사용자 정보를 업데이트하여 저장합니다.
+
+	}
 }

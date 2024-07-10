@@ -28,7 +28,7 @@ public class Board {
     @Column(name = "board_views", nullable = false)
     private Integer boardViews;
 
-    @Column(name = "board_author", nullable = false)
+    @Column(name = "board_author", nullable = false) // 작성자
     private String boardAuthor;
 
     @Column(name = "board_content", nullable = false)
@@ -36,6 +36,10 @@ public class Board {
 
     @Column(name = "board_image")
     private String boardImage;
+    
+    // DB 에 추가
+    @Column(name = "board_profile_image")
+    private String boardProfileImage;
 
     @Temporal(TemporalType.DATE)
     @Column(name = "board_date")

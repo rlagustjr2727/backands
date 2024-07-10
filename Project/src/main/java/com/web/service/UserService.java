@@ -8,4 +8,5 @@ public interface UserService {
     boolean isUserIdExists(String userId);
     boolean isUserNickNameExists(String userNickName);
     User getUserById(String userId);
+	User updateUser(User user);
 }

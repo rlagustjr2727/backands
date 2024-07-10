@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.web.board.Board;
+import com.web.board.Post;
 import com.web.service.BoardService;
 
 @RestController
@@ -29,7 +30,7 @@ public class BoardController {
 
     @Autowired
     private BoardService boardService;
-
+    
     // 업로드된 파일을 저장할 폴더 경로
     private static final String UPLOADED_FOLDER = "uploads/";
 
@@ -43,9 +44,9 @@ public class BoardController {
         return boardService.getAllBoards(page, size);
     }
 
-    @GetMapping("/{id}")
-    public Board getBoardById(@PathVariable Long id) {
-        return boardService.getBoardById(id);
+    @GetMapping("/{boardSeq}")
+    public Board getBoardById(@PathVariable Long boardSeq) {
+        return boardService.getBoardById(boardSeq);
     }
 
     // 파일 업로드를 처리하는 엔드포인트
@@ -122,4 +123,20 @@ public class BoardController {
         boardService.unlikeBoard(id);
         return ResponseEntity.ok().build();
     }
+    
+    // 사용자가 작성한 게시글 목록 가져오는 엔드포인트 추가
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Board>> getUserBoard(@PathVariable Long userId) {
+    	List<Board> userBoard = boardService.findBoardByUserId(userId);
+    	return ResponseEntity.ok(userBoard);
+    }
+    
+    // 사용자가 좋아요 누른 게시글 목록 가져오는 엔드포인트 추가
+    @GetMapping("/like/{userId}")
+    public ResponseEntity<List<Board>> getUserLikedBoard(@PathVariable Long userId){
+    	List<Board> likedBoard = boardService.findLikedBoardByUserId(userId);
+    	return ResponseEntity.ok(likedBoard);
+    }
+    
+   
 }

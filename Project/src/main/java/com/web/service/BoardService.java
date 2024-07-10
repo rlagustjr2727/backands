@@ -1,7 +1,6 @@
 package com.web.service;
 
 import java.util.List;
-import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -11,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.web.board.Board;
+import com.web.board.Post;
 import com.web.exception.ResourceNotFoundException;
 import com.web.repository.BoardRepository;
 import com.web.repository.BoardRepositoryCustom;
@@ -92,4 +92,16 @@ public class BoardService {
         board.setBoardLikes(board.getBoardLikes() - 1);
         boardRepository.save(board);
     }
+    
+    // 사용자 ID로 게시글 목록 조회
+    public List<Board> findBoardByUserId(Long userId) {
+    	return boardRepository.findByUserId(userId);
+    }
+    
+    // 사용자 ID로 좋아요 누른 게시글 목록 조회
+    public List<Board> findLikedBoardByUserId(Long userId) {
+    	return boardRepository.findLikedBoardByUserId(userId);
+    }
+    
+    
 }

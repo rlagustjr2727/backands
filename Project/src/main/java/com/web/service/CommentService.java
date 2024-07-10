@@ -39,4 +39,10 @@ public class CommentService {
         comment.setCommentContent(updatedComment.getCommentContent());
         return commentRepository.save(comment);
     }
+    
+    // 사용자 ID 로 댓글목록 가져오기
+    // CommentRepository의 findByUserId 메서드를 호출하여 사용자 ID로 댓글 목록을 가져옵니다.
+	public List<Comment> findCommentsByUserId(Long userId) {
+		return commentRepository.findByUserId(userId);
+	}
 }

@@ -42,4 +42,11 @@ public class CommentController {
         Comment comment = commentService.updateComment(commentSeq, updatedComment);
         return ResponseEntity.ok(comment);
     }
+    
+    // 사용자가 작성한 댓글 목록 가져오는 앤드포인트 추가
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Comment>> getUserCommnets(@PathVariable Long userId) {
+    	List<Comment> userComments = commentService.findCommentsByUserId(userId);
+    	return ResponseEntity.ok(userComments);
+    }
 }

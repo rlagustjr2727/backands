@@ -8,6 +8,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import com.web.service.UserService;
 import com.web.user.User;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PathVariable;
+
 
 @Validated
 @RestController
@@ -57,4 +61,11 @@ public class UserController {
         }
         return ResponseEntity.ok(Map.of("message", "Logout success"));
     }
+    // 사용자 정보 수정 엔드포인트 추가
+    @PutMapping("/update")
+    public ResponseEntity<User> updateUser(@RequestBody User user) {
+    	User updatedUser = userService.updateUser(user);
+    	return ResponseEntity.ok(updatedUser);
+    }
+    
 }
