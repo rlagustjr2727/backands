@@ -15,12 +15,28 @@ public class UserPrincipal implements UserDetails {
     public UserPrincipal(User user) {
         this.user = user;
     }
-
+    
+    public User getUser() {
+        return user;
+    }
+    
+    public String getUserProfileImage() {
+    	return user.getUserProfileImage();
+    }
+    
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null; // 필요한 경우 권한 설정
     }
 
+    public String getNickname() {
+    	return user.getUserNickName();
+    }
+    
+    public String getProfileImageUrl() {
+        return user.getUserProfileImage();
+    }
+    
     @Override
     public String getPassword() {
         return user.getUserPassword();

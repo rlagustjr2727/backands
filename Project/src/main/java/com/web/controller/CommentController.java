@@ -18,8 +18,8 @@ public class CommentController {
 
     // 게시글 ID로 댓글 가져오기
     @GetMapping("/board/{boardSeq}")
-    public List<Comment> getCommentsByBoardId(@PathVariable Long boardSeq) {
-        return commentService.getCommentsByBoardId(boardSeq);
+    public List<Comment> getCommentsByBoardSeq(@PathVariable Long boardSeq) {
+        return commentService.getCommentsByBoardSeq(boardSeq);
     }
 
     // 댓글 생성

@@ -36,6 +36,10 @@ public class Board {
 
     @Column(name = "board_image")
     private String boardImage;
+    
+    // DB 에 추가
+    @Column(name = "board_profile_image")
+    private String boardProfileImage;
 
     @Temporal(TemporalType.DATE)
     @Column(name = "board_date")
