@@ -38,9 +38,9 @@ public class BoardService {
         return boards;
     }
 
-    public Board getBoardById(Long id) {
-        Board board = boardRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Board not found for this id :: " + id));
+    public Board getBoardBySeq(Long seq) {
+        Board board = boardRepository.findById(seq)
+            .orElseThrow(() -> new ResourceNotFoundException("Board not found for this seq :: " + seq));
         board.setCommentCount(board.getCommentCount());
         return board;
     }
@@ -49,8 +49,12 @@ public class BoardService {
         return boardRepository.save(board);
     }
 
-    public void deleteBoard(Long id) {
-        boardRepository.deleteById(id);
+    public Board updateBoard(Board board) {
+        return boardRepository.save(board);
+    }
+
+    public void deleteBoard(Long seq) {
+        boardRepository.deleteById(seq);
     }
     
     // 페이징
@@ -62,9 +66,9 @@ public class BoardService {
     }
     
     // 조회수 증가
-    public void incrementViews(Long id) {
-        Board board = boardRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Board not found for this id :: " + id));
+    public void incrementViews(Long seq) {
+        Board board = boardRepository.findById(seq)
+            .orElseThrow(() -> new ResourceNotFoundException("Board not found for this seq :: " + seq));
         board.setBoardViews(board.getBoardViews() + 1);
         boardRepository.save(board);
     }
@@ -78,30 +82,18 @@ public class BoardService {
     }
     
     // 좋아요 수 증가 메서드 추가
-    public void likeBoard(Long id) {
-        Board board = boardRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Board not found for this id :: " + id));
+    public void likeBoard(Long seq) {
+        Board board = boardRepository.findById(seq)
+            .orElseThrow(() -> new ResourceNotFoundException("Board not found for this seq :: " + seq));
         board.setBoardLikes(board.getBoardLikes() + 1);
         boardRepository.save(board);
     }
     
     // 좋아요 취소 메서드 추가
-    public void unlikeBoard(Long id) {
-        Board board = boardRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Board not found for this id :: " + id));
+    public void unlikeBoard(Long seq) {
+        Board board = boardRepository.findById(seq)
+            .orElseThrow(() -> new ResourceNotFoundException("Board not found for this seq :: " + seq));
         board.setBoardLikes(board.getBoardLikes() - 1);
         boardRepository.save(board);
     }
-    
-    // 사용자 ID로 게시글 목록 조회
-    public List<Board> findBoardByUserId(Long userId) {
-    	return boardRepository.findByUserId(userId);
-    }
-    
-    // 사용자 ID로 좋아요 누른 게시글 목록 조회
-    public List<Board> findLikedBoardByUserId(Long userId) {
-    	return boardRepository.findLikedBoardByUserId(userId);
-    }
-    
-    
 }

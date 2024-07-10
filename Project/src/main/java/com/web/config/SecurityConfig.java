@@ -57,6 +57,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .authorizeRequests()
             .antMatchers("/api/auth/**").permitAll()
             .antMatchers("/api/board/**").permitAll()
+            .antMatchers("/api/notice/**").hasAuthority("ADMIN") // 관리자만 접근 가능한 공지사항 관련 API
+            .antMatchers("/api/comments/**").permitAll()
+            .antMatchers("/uploads/**").permitAll()  // 추가: 업로드된 파일에 대한 접근 허용
             .anyRequest().authenticated();
 
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

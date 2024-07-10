@@ -15,8 +15,8 @@ public class CommentService {
     @Autowired
     private CommentRepository commentRepository;
 
-    // 게시글 ID로 댓글 가져오기
-    public List<Comment> getCommentsByBoardId(Long boardSeq) {
+    // 게시글 번호(seq)로 댓글 가져오기
+    public List<Comment> getCommentsByBoardSeq(Long boardSeq) {
         return commentRepository.findByBoardBoardSeq(boardSeq);
     }
 

@@ -19,6 +19,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,6 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.web.repository.UserRepositoryCustom;
 import com.web.security.CustomUserDetailsService;
 import com.web.security.JwtTokenProvider;
+import com.web.security.UserPrincipal;
 import com.web.service.EmailService;
 import com.web.service.UserService;
 import com.web.user.User;
@@ -203,5 +205,10 @@ public class AuthController {
         Map<String, Boolean> response = new HashMap<>();
         response.put("exists", userRepositoryCustom.existsByUserNickNameCustom(userNickName));
         return response;
+    }
+    
+    @GetMapping("/user")
+    public ResponseEntity<UserPrincipal> getCurrentUser(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+        return ResponseEntity.ok(userPrincipal);
     }
 }
